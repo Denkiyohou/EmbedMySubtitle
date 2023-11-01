@@ -6,6 +6,7 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="EmbedMySubtitle.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
+        x:CompileBindings="True"
         Icon="/Assets/avalonia-logo.ico"
         Title="EmbedMySubtitle">
 
@@ -15,6 +16,17 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+  <Grid RowDefinitions="*, *, *" >
+    <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="5"
+                HorizontalAlignment="Center">
+      <Button Command="{}" Content="Select Video" />
+      <TextBox x:Name="VideoFilePath" Width="500" Height="30" Margin="10" IsReadOnly="True" />
+    </StackPanel>
+    <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="5"
+                HorizontalAlignment="Center">
+      <Button Command="{}" Content="Select Subtitle" />
+      <TextBox x:Name="SubtitleFilePath" Width="500" Height="30" Margin="10" IsReadOnly="True" />
+    </StackPanel>
+  </Grid>
 
 </Window>
