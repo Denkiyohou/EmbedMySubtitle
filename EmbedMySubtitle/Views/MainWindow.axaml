@@ -19,13 +19,13 @@
   <Grid RowDefinitions="auto, auto, auto, auto" >
     <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="5"
                 HorizontalAlignment="Center">
-      <Button Command="{}" Content="Select Video" />
-      <TextBox x:Name="VideoFilePath" Width="500" Height="30" Margin="10" IsReadOnly="True" />
+      <Button Command="{Binding SelectVideoCommand}" Content="Select Video" />
+      <TextBox x:Name="VideoFilePath" Text="{Binding VideoFilePath}" Width="500" Height="30" Margin="10" IsReadOnly="True" />
     </StackPanel>
     <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="5"
                 HorizontalAlignment="Center">
-      <Button Command="{}" Content="Select Subtitle" />
-      <TextBox x:Name="SubtitleFilePath" Width="500" Height="30" Margin="10" IsReadOnly="True" />
+      <Button Command="{Binding SelectSubtitleCommand}" Content="Select Subtitle" />
+      <TextBox x:Name="SubtitleFilePath" Text="{Binding SubtitleFilePath}" Width="500" Height="30" Margin="10" IsReadOnly="True" />
     </StackPanel>
     <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="5"
                 HorizontalAlignment="Center" >
