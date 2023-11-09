@@ -6,12 +6,14 @@ using System.Threading.Tasks;
 using Avalonia.Platform.Storage;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Dialogs;
+using Avalonia;
 
 namespace EmbedMySubtitle.Services
 {
     public class FileDialogService
-    {   
-        public static async Task<string?> OpenVideoFilePicker()
+    {
+        public async Task<string?> OpenVideoFilePicker()
         {
             var options = new FilePickerOpenOptions()
             {
@@ -21,7 +23,7 @@ namespace EmbedMySubtitle.Services
             return await OpenFilePickerAsync(options);
         }
 
-        public static async Task<string?> OpenSubtitleFilePicker()
+        public async Task<string?> OpenSubtitleFilePicker()
         {
             var options = new FilePickerOpenOptions()
             {
@@ -31,24 +33,35 @@ namespace EmbedMySubtitle.Services
             return await OpenFilePickerAsync(options);
         }
 
+        public async Task<string?> OpenFolderPicker()
+        {
+            return await OpenFolderPickerAsync();
+        }
+
         private static async Task<string?> OpenFilePickerAsync(FilePickerOpenOptions openOptions)
         {
-            var window = GetWindow();
+            if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop ||
+            desktop.MainWindow?.StorageProvider is not { } provider)
+                throw new NullReferenceException("Missing StorageProvider instance.");
 
-            if (window is null)
-            {
-                return null;
-            }
 
-            var result = await window.StorageProvider.OpenFilePickerAsync(openOptions);
-
+            var result = await provider.OpenFilePickerAsync(openOptions);
+            
             return result.FirstOrDefault()?.Path.LocalPath;
         }
 
-        private static Window? GetWindow()
+        private static async Task<string?> OpenFolderPickerAsync()
         {
-            var lifetime = Avalonia.Application.Current!.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
-            return lifetime?.MainWindow;
+            if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop ||
+            desktop.MainWindow?.StorageProvider is not { } provider)
+                throw new NullReferenceException("Missing StorageProvider instance.");
+
+            var result = await provider.OpenFolderPickerAsync(new FolderPickerOpenOptions()
+            {
+                AllowMultiple = false
+            });
+
+            return result.FirstOrDefault()?.Path.LocalPath;
         }
 
         public static FilePickerFileType videoAll { get; } = new("All Videos")

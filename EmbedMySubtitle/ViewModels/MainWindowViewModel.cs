@@ -16,7 +16,10 @@ namespace EmbedMySubtitle.ViewModels
         {
             SelectVideoCommand = ReactiveCommand.Create(SelectVideo);
             SelectSubtitleCommand = ReactiveCommand.Create(SelectSubtitle);
+            SelectOutputPathCommand = ReactiveCommand.Create(SelectOutputPath);
         }
+
+        private FileDialogService _dialogService = new FileDialogService();
 
         private string? _videoFilePath;
         public string? VideoFilePath
@@ -32,35 +35,46 @@ namespace EmbedMySubtitle.ViewModels
             set => this.RaiseAndSetIfChanged(ref _subtitleFilePath, value);
         }
 
-        //private string? _outputFilePaht;
-        //public string? OutputFilePaht
-        //{
-        //    get => _outputFilePaht;
-        //    set => this.RaiseAndSetIfChanged(ref _outputFilePaht, value);
-        //}
+        private string? _outputFolderPath;
+        public string? OutputFolderPath
+        {
+            get => _outputFolderPath;
+            set => this.RaiseAndSetIfChanged(ref _outputFolderPath, value);
+        }
 
         public ICommand SelectVideoCommand { get; }
         public ICommand SelectSubtitleCommand { get; }
-        //public ICommand SelectOutputPathCommand { get; }
-        public ICommand EmbedSubtitleDCommand { get; }
+        public ICommand SelectOutputPathCommand { get; }
+        public ICommand EmbedSubtitleCommand { get; }
 
         public async void SelectVideo()
         {
-            var result = await FileDialogService.OpenVideoFilePicker();
+            var result = await _dialogService.OpenVideoFilePicker();
             if (result != null)
             {
-                _videoFilePath = result;
+                VideoFilePath = result;
             }
         }
 
         public async void SelectSubtitle()
         {
-            var result = await FileDialogService.OpenSubtitleFilePicker();
+            var result = await _dialogService.OpenSubtitleFilePicker();
             if(result != null)
             {
-                _subtitleFilePath = result;
+                SubtitleFilePath = result;
             }
         }
+
+        public async void SelectOutputPath()
+        {
+            var result = await _dialogService.OpenFolderPicker();
+
+            if (result != null)
+            {
+                OutputFolderPath = result;
+            }
+        }
+
 
     }
 }
