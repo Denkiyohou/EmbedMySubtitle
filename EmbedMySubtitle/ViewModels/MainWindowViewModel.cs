@@ -1,12 +1,14 @@
 ﻿using ReactiveUI;
 using System;
 using System.IO;
-using FFmpeg;
 using System.Windows.Input;
 using EmbedMySubtitle.Services;
 using Avalonia.Platform.Storage;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Diagnostics;
+using System.ComponentModel;
+using System.Text.RegularExpressions;
 
 namespace EmbedMySubtitle.ViewModels
 {
@@ -42,6 +44,13 @@ namespace EmbedMySubtitle.ViewModels
             set => this.RaiseAndSetIfChanged(ref _outputFolderPath, value);
         }
 
+        private double _progress;
+        public double Progress
+        {
+            get => _progress;
+            set => this.RaiseAndSetIfChanged(ref _progress, value);
+        }
+
         public ICommand SelectVideoCommand { get; }
         public ICommand SelectSubtitleCommand { get; }
         public ICommand SelectOutputPathCommand { get; }
@@ -75,6 +84,51 @@ namespace EmbedMySubtitle.ViewModels
             }
         }
 
+        public async Task<bool> ProcessVideo()
+        {
+            try
+            {
+                var process = new Process();
+                process.StartInfo = new ProcessStartInfo("ffmpeg", $"-i \"{VideoFilePath}\" " +
+                    $"-vf \"subtitles={SubtitleFilePath}\" \"{OutputFolderPath}\"\\output.mp4")
+                {
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    CreateNoWindow = true,
+                };
+
+                process.Start();
+
+                StreamReader reader = process.StandardOutput;
+
+                while (!process.HasExited)
+                {
+                    var line = await reader.ReadLineAsync();
+                    if(line != null)
+                    {
+                        var progressMatch = Regex.Match(line, @"time=(?<hours>\d+):(?<minutes>\d+):(?<seconds>\d+).(?<milliseconds>\d+)");
+                        if(progressMatch.Success)
+                        {
+                            var hours = int.Parse(progressMatch.Groups["hours"].Value);
+                            var minutes = int.Parse(progressMatch.Groups["minutes"].Value);
+                            var seconds = int.Parse(progressMatch.Groups["seconds"].Value);
+                            var milliseconds = int.Parse(progressMatch.Groups["milliseconds"].Value);
+
+                            var totalmilliseconds = (hours * 3600 + minutes * 60 + seconds) * 1000 + milliseconds;
+
+                            // TO-DO 匹配整个视频的时常并用totalmillisecond除以视频的长度
+                        }
+                    }
+                }
+
+                
+            }
+            catch ( Exception ex )
+            {
+                Console.WriteLine( ex );
+                return false;
+            }
+        }
 
     }
 }

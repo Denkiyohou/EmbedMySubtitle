@@ -8,6 +8,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Dialogs;
 using Avalonia;
+using System.Reactive.Subjects;
 
 namespace EmbedMySubtitle.Services
 {

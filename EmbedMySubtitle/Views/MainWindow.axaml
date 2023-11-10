@@ -30,7 +30,7 @@
     <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="5"
                 HorizontalAlignment="Center" >
       <Button Command="{}" Content="Select Target" />
-      <TextBox x:Name="OutputFilePath" Width="500" Height="30" Margin="10" IsReadOnly="True" />
+      <TextBox x:Name="OutputFilePath" Text="{Binding Count}" Width="500" Height="30" Margin="10" IsReadOnly="True" />
     </StackPanel>
     <StackPanel Grid.Row="3" Orientation="Horizontal" Spacing="5"
                 HorizontalAlignment="Center" >
