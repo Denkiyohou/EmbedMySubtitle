@@ -72,7 +72,7 @@ namespace EmbedMySubtitle.Services
 
         public static FilePickerFileType subtitleAll { get; } = new("All Subtitles")
         {
-            Patterns = new[] { "*.ass" }
+            Patterns = new[] { "*.ass", "*.srt" }
         };
     }
 }
