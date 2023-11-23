@@ -4,11 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Avalonia.Platform.Storage;
-using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Dialogs;
 using Avalonia;
-using System.Reactive.Subjects;
 
 namespace EmbedMySubtitle.Services
 {
@@ -65,12 +62,12 @@ namespace EmbedMySubtitle.Services
             return result.FirstOrDefault()?.Path.LocalPath;
         }
 
-        public static FilePickerFileType videoAll { get; } = new("All Videos")
+        private static FilePickerFileType videoAll { get; } = new("All Videos")
         {
             Patterns = new[] { "*.mp4", "*.mkv" }
         };
 
-        public static FilePickerFileType subtitleAll { get; } = new("All Subtitles")
+        private static FilePickerFileType subtitleAll { get; } = new("All Subtitles")
         {
             Patterns = new[] { "*.ass", "*.srt" }
         };

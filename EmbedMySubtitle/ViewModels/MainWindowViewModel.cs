@@ -3,14 +3,9 @@ using System;
 using System.IO;
 using System.Windows.Input;
 using EmbedMySubtitle.Services;
-using Avalonia.Platform.Storage;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Diagnostics;
-using System.ComponentModel;
-using System.Text.RegularExpressions;
 using Xabe.FFmpeg;
-using System.Resources;
 using System.Linq;
 
 namespace EmbedMySubtitle.ViewModels
@@ -22,6 +17,7 @@ namespace EmbedMySubtitle.ViewModels
             SelectVideoCommand = ReactiveCommand.Create(SelectVideo);
             SelectSubtitleCommand = ReactiveCommand.Create(SelectSubtitle);
             SelectOutputPathCommand = ReactiveCommand.Create(SelectOutputPath);
+            ProcessCommand = ReactiveCommand.Create(ProcessVideo);
         }
 
         private FileDialogService _dialogService = new FileDialogService();
@@ -57,7 +53,7 @@ namespace EmbedMySubtitle.ViewModels
         public ICommand SelectVideoCommand { get; }
         public ICommand SelectSubtitleCommand { get; }
         public ICommand SelectOutputPathCommand { get; }
-        public ICommand EmbedSubtitleCommand { get; }
+        public ICommand ProcessCommand { get; }
 
         public async void SelectVideo()
         {
@@ -89,7 +85,7 @@ namespace EmbedMySubtitle.ViewModels
         public async Task ProcessVideo()
         {
             IMediaInfo inputFile = await FFmpeg.GetMediaInfo(VideoFilePath);
-            string outputFilePath = OutputFolderPath + "output.mp4";
+            string outputFilePath = OutputFolderPath + "\\output.mp4";
 
             IVideoStream videoStream = inputFile.VideoStreams.First().AddSubtitles(SubtitleFilePath);
 
@@ -99,7 +95,8 @@ namespace EmbedMySubtitle.ViewModels
 
             conversion.OnProgress += (sender, args) =>
             {
-                Progress = args.Duration.TotalSeconds / args.TotalLength.TotalSeconds;
+                Progress = args.Duration.TotalSeconds / args.TotalLength.TotalSeconds * 100;
+                Debug.WriteLine($"[{args.Duration} / {args.TotalLength}] {Progress}%");
             };
 
             await conversion.Start();                                                      
@@ -107,46 +104,3 @@ namespace EmbedMySubtitle.ViewModels
 
     }
 }
-
-
-// try to process video by Process()
-//try
-//{
-//    var process = new Process();
-//    process.StartInfo = new ProcessStartInfo("ffmpeg", $"-i \"{VideoFilePath}\" " +
-//        $"-vf \"subtitles={SubtitleFilePath}\" \"{OutputFolderPath}\"\\output.mp4")
-//    {
-//        UseShellExecute = false,
-//        RedirectStandardOutput = true,
-//        CreateNoWindow = true,
-//    };
-
-//    process.Start();
-
-//    StreamReader reader = process.StandardOutput;
-
-//    while (!process.HasExited)
-//    {
-//        var line = await reader.ReadLineAsync();
-//        if(line != null)
-//        {
-//            var progressMatch = Regex.Match(line, @"time=(?<hours>\d+):(?<minutes>\d+):(?<seconds>\d+).(?<milliseconds>\d+)");
-//            if(progressMatch.Success)
-//            {
-//                var hours = int.Parse(progressMatch.Groups["hours"].Value);
-//                var minutes = int.Parse(progressMatch.Groups["minutes"].Value);
-//                var seconds = int.Parse(progressMatch.Groups["seconds"].Value);
-//                var milliseconds = int.Parse(progressMatch.Groups["milliseconds"].Value);
-
-//                var totalmilliseconds = (hours * 3600 + minutes * 60 + seconds) * 1000 + milliseconds;
-
-//                // TO-DO 匹配整个视频的时长并用totalmillisecond除以视频的长度
-//            }
-//        }
-//    }
-//}
-//catch ( Exception ex )
-//{
-//    Console.WriteLine( ex );
-//    return false;
-//}

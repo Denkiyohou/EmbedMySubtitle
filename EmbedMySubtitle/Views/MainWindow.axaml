@@ -3,7 +3,7 @@
         xmlns:vm="using:EmbedMySubtitle.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="200"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="280"
         x:Class="EmbedMySubtitle.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         x:CompileBindings="True"
@@ -16,7 +16,7 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-  <Grid RowDefinitions="auto, auto, auto, auto" >
+  <Grid RowDefinitions="auto, auto, auto, auto, auto" >
     <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="5"
                 HorizontalAlignment="Center">
       <Button Command="{Binding SelectVideoCommand}" Content="Select Video" />
@@ -29,12 +29,16 @@
     </StackPanel>
     <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="5"
                 HorizontalAlignment="Center" >
-      <Button Command="{}" Content="Select Target" />
+      <Button Command="{Binding SelectOutputPathCommand}" Content="Select Target" />
       <TextBox x:Name="OutputFolderPath" Text="{Binding OutputFolderPath}" Width="500" Height="30" Margin="10" IsReadOnly="True" />
     </StackPanel>
     <StackPanel Grid.Row="3" Orientation="Horizontal" Spacing="5"
                 HorizontalAlignment="Center" >
-      <Button Command="{}" Content="Run" HorizontalAlignment="Stretch"/>
+      <Button Command="{Binding ProcessCommand}" Content="Process" HorizontalAlignment="Stretch"/>
+    </StackPanel>
+    <StackPanel Grid.Row="4" Orientation="Horizontal" Spacing="5"
+                HorizontalAlignment="Center">
+      <ProgressBar Value="{Binding Progress}" Height="30" Width="500" VerticalAlignment="Bottom"/>
     </StackPanel>
   </Grid>
 
