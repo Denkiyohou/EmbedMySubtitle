@@ -3,7 +3,7 @@
         xmlns:vm="using:EmbedMySubtitle.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="280"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="300"
         x:Class="EmbedMySubtitle.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         x:CompileBindings="True"
@@ -16,29 +16,42 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-  <Grid RowDefinitions="auto, auto, auto, auto, auto" >
-    <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="5"
-                HorizontalAlignment="Center">
-      <Button Command="{Binding SelectVideoCommand}" Content="Select Video" />
-      <TextBox x:Name="VideoFilePath" Text="{Binding VideoFilePath}" Width="500" Height="30" Margin="10" IsReadOnly="True" />
+  <Grid RowDefinitions="auto, auto, auto, auto, auto">
+    <!-- Row 0: Select Video -->
+    <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+      <Grid ColumnDefinitions="120, 100, *">
+      <Label Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="Select Video" FontWeight="Bold"/>
+      <Button Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding SelectVideoCommand}" Content="Browse" Margin="5"/>
+      <TextBox Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center" x:Name="VideoFilePath" Text="{Binding VideoFilePath}" Width="500" Height="30" Margin="5" IsReadOnly="True"/>
+      </Grid>
     </StackPanel>
-    <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="5"
-                HorizontalAlignment="Center">
-      <Button Command="{Binding SelectSubtitleCommand}" Content="Select Subtitle" />
-      <TextBox x:Name="SubtitleFilePath" Text="{Binding SubtitleFilePath}" Width="500" Height="30" Margin="10" IsReadOnly="True" />
+
+    <!-- Row 1: Select Subtitle -->
+    <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+      <Grid ColumnDefinitions="120, 100, *">
+      <Label Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="Select Subtitle" FontWeight="Bold"/>
+      <Button Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding SelectSubtitleCommand}" Content="Browse" Margin="5"/>
+      <TextBox Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center" x:Name="SubtitleFilePath" Text="{Binding SubtitleFilePath}" Width="500" Height="30" Margin="5" IsReadOnly="True"/>
+      </Grid>
     </StackPanel>
-    <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="5"
-                HorizontalAlignment="Center" >
-      <Button Command="{Binding SelectOutputPathCommand}" Content="Select Target" />
-      <TextBox x:Name="OutputFolderPath" Text="{Binding OutputFolderPath}" Width="500" Height="30" Margin="10" IsReadOnly="True" />
+
+    <!-- Row 2: Select Target -->
+    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+      <Grid ColumnDefinitions="120, 100, *">
+      <Label Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="Select Output" FontWeight="Bold"/>
+      <Button Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding SelectOutputPathCommand}" Content="Browse" Margin="5"/>
+      <TextBox Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center" x:Name="OutputFolderPath" Text="{Binding OutputFolderPath}" Width="500" Height="30" Margin="5" IsReadOnly="True"/>
+      </Grid>
     </StackPanel>
-    <StackPanel Grid.Row="3" Orientation="Horizontal" Spacing="5"
-                HorizontalAlignment="Center" >
-      <Button Command="{Binding ProcessCommand}" Content="Process" HorizontalAlignment="Stretch"/>
+
+    <!-- Row 3: Process Button -->
+    <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+      <Button Command="{Binding ProcessCommand}" Content="Process" HorizontalAlignment="Stretch" Background="#4CAF50" Foreground="White" FontWeight="Bold" Padding="10"/>
     </StackPanel>
-    <StackPanel Grid.Row="4" Orientation="Horizontal" Spacing="5"
-                HorizontalAlignment="Center">
-      <ProgressBar Value="{Binding Progress}" Height="30" Width="500" VerticalAlignment="Bottom"/>
+
+    <!-- Row 4: Progress Bar -->
+    <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+      <ProgressBar Value="{Binding Progress}" Height="30" Width="500" VerticalAlignment="Center" Background="#E0E0E0" Foreground="#4CAF50"/>
     </StackPanel>
   </Grid>
 
