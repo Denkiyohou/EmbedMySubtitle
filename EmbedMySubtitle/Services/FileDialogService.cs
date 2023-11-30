@@ -7,7 +7,7 @@ using Avalonia.Platform.Storage;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia;
 
-namespace EmbedMySubtitle.Services
+namespace EmbedMySubtitle.FileDialogServices
 {
     public class FileDialogService
     {
