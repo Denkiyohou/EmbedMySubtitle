@@ -4,8 +4,6 @@ using System.IO;
 using System.Windows.Input;
 using EmbedMySubtitle.FileDialogServices;
 using System.Threading.Tasks;
-using System.Diagnostics;
-using Xabe.FFmpeg;
 using System.Linq;
 using EmbedMySubtitle.Services;
 
@@ -95,23 +93,7 @@ namespace EmbedMySubtitle.ViewModels
 
         public async Task ProcessVideo()
         {
-            await _videoProcessService.EmbedSubtitle(VideoFilePath, SubtitleFilePath, OutputFolderPath);
-            //IMediaInfo inputFile = await FFmpeg.GetMediaInfo(VideoFilePath);
-            //string outputFilePath = OutputFolderPath + "\\output.mp4";
-
-            //IVideoStream videoStream = inputFile.VideoStreams.First().AddSubtitles(SubtitleFilePath);
-
-            //var conversion = FFmpeg.Conversions.New()
-            //                                   .AddStream(videoStream)
-            //                                   .SetOutput(outputFilePath);
-
-            //conversion.OnProgress += (sender, args) =>
-            //{
-            //    Progress = args.Duration.TotalSeconds / args.TotalLength.TotalSeconds * 100;
-            //    Debug.WriteLine($"[{args.Duration} / {args.TotalLength}] {Progress}%");
-            //};
-
-            //await conversion.Start();                                                      
+            await _videoProcessService.EmbedSubtitle(VideoFilePath, SubtitleFilePath, OutputFolderPath);                                             
         }
 
     }

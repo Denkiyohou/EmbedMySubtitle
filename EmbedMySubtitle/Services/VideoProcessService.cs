@@ -33,9 +33,26 @@ namespace EmbedMySubtitle.Services
             await conversion.Start();
         }
 
-        public async Task compressVideo(string? videoFilePath, string? outputFolderPath, double progress = 0.0)
+        public async Task compressVideo(string? videoFilePath, string? outputFolderPath, int constantRateFactor = 28)
         {
-            // TO-DO: Implement compressVideo()
+            IMediaInfo inputFile = await FFmpeg.GetMediaInfo(videoFilePath);
+            string outputFilePath = outputFolderPath + "\\compressedOutput.mp4";
+
+            IVideoStream videoStream = inputFile.VideoStreams.First();
+
+            var conversion = FFmpeg.Conversions.New()
+                                               .AddStream(videoStream)
+                                               .AddParameter($"-vcodec libx265 -crf {constantRateFactor}")
+                                               .SetOutput(outputFilePath);
+
+            conversion.OnProgress += (sender, args) =>
+            {
+                double progress = args.Duration.TotalSeconds / args.TotalLength.TotalSeconds * 100;
+                ProgressUpdated?.Invoke(progress);
+                Debug.WriteLine($"[{args.Duration} / {args.TotalLength}] {progress}%");
+            };
+
+            await conversion.Start();
         }
     }
 }
