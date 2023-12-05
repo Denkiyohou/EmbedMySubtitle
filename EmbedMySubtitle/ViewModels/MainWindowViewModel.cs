@@ -7,20 +7,31 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using Xabe.FFmpeg;
 using System.Linq;
+using EmbedMySubtitle.Services;
 
 namespace EmbedMySubtitle.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
+        private FileDialogService _fileDialogService;
+        private VideoProcessService _videoProcessService;
+
         public MainWindowViewModel() 
         {
+            _fileDialogService = new FileDialogService();
+            _videoProcessService = new VideoProcessService();
+            _videoProcessService.ProgressUpdated += OnProgressUpdated;
+
             SelectVideoCommand = ReactiveCommand.Create(SelectVideo);
             SelectSubtitleCommand = ReactiveCommand.Create(SelectSubtitle);
             SelectOutputPathCommand = ReactiveCommand.Create(SelectOutputPath);
             ProcessCommand = ReactiveCommand.Create(ProcessVideo);
         }
 
-        private FileDialogService _dialogService = new FileDialogService();
+        private void OnProgressUpdated(double progress)
+        {
+            Progress = progress;
+        }
 
         private string? _videoFilePath;
         public string? VideoFilePath
@@ -57,7 +68,7 @@ namespace EmbedMySubtitle.ViewModels
 
         public async void SelectVideo()
         {
-            var result = await _dialogService.OpenVideoFilePicker();
+            var result = await _fileDialogService.OpenVideoFilePicker();
             if (result != null)
             {
                 VideoFilePath = result;
@@ -66,7 +77,7 @@ namespace EmbedMySubtitle.ViewModels
 
         public async void SelectSubtitle()
         {
-            var result = await _dialogService.OpenSubtitleFilePicker();
+            var result = await _fileDialogService.OpenSubtitleFilePicker();
             if(result != null)
             {
                 SubtitleFilePath = result;
@@ -75,7 +86,7 @@ namespace EmbedMySubtitle.ViewModels
 
         public async void SelectOutputPath()
         {
-            var result = await _dialogService.OpenFolderPicker();
+            var result = await _fileDialogService.OpenFolderPicker();
             if (result != null)
             {
                 OutputFolderPath = result;
@@ -84,22 +95,23 @@ namespace EmbedMySubtitle.ViewModels
 
         public async Task ProcessVideo()
         {
-            IMediaInfo inputFile = await FFmpeg.GetMediaInfo(VideoFilePath);
-            string outputFilePath = OutputFolderPath + "\\output.mp4";
+            await _videoProcessService.EmbedSubtitle(VideoFilePath, SubtitleFilePath, OutputFolderPath);
+            //IMediaInfo inputFile = await FFmpeg.GetMediaInfo(VideoFilePath);
+            //string outputFilePath = OutputFolderPath + "\\output.mp4";
 
-            IVideoStream videoStream = inputFile.VideoStreams.First().AddSubtitles(SubtitleFilePath);
+            //IVideoStream videoStream = inputFile.VideoStreams.First().AddSubtitles(SubtitleFilePath);
 
-            var conversion = FFmpeg.Conversions.New()
-                                               .AddStream(videoStream)
-                                               .SetOutput(outputFilePath);
+            //var conversion = FFmpeg.Conversions.New()
+            //                                   .AddStream(videoStream)
+            //                                   .SetOutput(outputFilePath);
 
-            conversion.OnProgress += (sender, args) =>
-            {
-                Progress = args.Duration.TotalSeconds / args.TotalLength.TotalSeconds * 100;
-                Debug.WriteLine($"[{args.Duration} / {args.TotalLength}] {Progress}%");
-            };
+            //conversion.OnProgress += (sender, args) =>
+            //{
+            //    Progress = args.Duration.TotalSeconds / args.TotalLength.TotalSeconds * 100;
+            //    Debug.WriteLine($"[{args.Duration} / {args.TotalLength}] {Progress}%");
+            //};
 
-            await conversion.Start();                                                      
+            //await conversion.Start();                                                      
         }
 
     }

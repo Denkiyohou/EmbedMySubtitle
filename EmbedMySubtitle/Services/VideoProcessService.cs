@@ -10,7 +10,9 @@ namespace EmbedMySubtitle.Services
 {
     public class VideoProcessService
     {
-        public async Task EmbedSubtitle(string videoFilePath, string subtitleFilePath, string outputFolderPath, double progress = 0.0)
+        public event Action<double>? ProgressUpdated;
+
+        public async Task EmbedSubtitle(string? videoFilePath, string? subtitleFilePath, string? outputFolderPath)
         {
             IMediaInfo inputFile = await FFmpeg.GetMediaInfo(videoFilePath);
             string outputFilePath = outputFolderPath + "\\output.mp4";
@@ -23,16 +25,17 @@ namespace EmbedMySubtitle.Services
 
             conversion.OnProgress += (sender, args) =>
             {
-                progress = args.Duration.TotalSeconds / args.TotalLength.TotalSeconds * 100;
+                double progress = args.Duration.TotalSeconds / args.TotalLength.TotalSeconds * 100;
+                ProgressUpdated?.Invoke(progress);
                 Debug.WriteLine($"[{args.Duration} / {args.TotalLength}] {progress}%");
             };
 
             await conversion.Start();
         }
 
-        public async Task compressVideo(string videoFilePath, string outputFolderPath, double progress = 0.0)
+        public async Task compressVideo(string? videoFilePath, string? outputFolderPath, double progress = 0.0)
         {
-            // TO-Do: Implement compressVideo()
+            // TO-DO: Implement compressVideo()
         }
     }
 }
